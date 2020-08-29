@@ -1,0 +1,8 @@
+{
+  "profile": "console",
+  "show_progress": 1,
+  "squash_repeats": 1,
+  "on_black": 1,
+  "clear_line": ">>> DBIx::Class ------ Start ------\n\n",
+  "executing": "\n>>> DBIx::Class ------ End ------\n\n"
+}
