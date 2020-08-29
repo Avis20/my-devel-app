@@ -15,11 +15,19 @@ sub webhook : Chained('base') : PathPart('webhook') : Args(0) {
     $c->stash->{json_data} = { success => 0 };
     return unless ref $c->req->body;
     open my $fh, $c->req->body->filename;
-    my $body = decode_json( join('', map { chomp; encode('UTF-8',$_) } <$fh> ) || '{}' );
+    my $json = join('', map { chomp; encode('UTF-8',$_) } <$fh> ) || '{}';
     warn "\n\n";
-    warn dumper $body;
+    warn "json = $json";
     warn "\n\n";
+    my $body = decode_json( $json );
     close $fh;
+
+    my $chat_id = $c->req->param('chat_id') || $c->config->{Telegram}->{chat_id};
+
+    my $telegram_conf = $c->config->{Telegram};
+    my $url = $telegram_conf->{protocol} . '://' . $telegram_conf->{host} . '/bot' . $telegram_conf->{token};
+    my $res = MyApp::Model::Chat->send_to_telegram({ url => $url, chat_id => $chat_id, message => $body->{text} });
+    $c->res->body( decode('utf8', encode_json( $res || {} ) ) );
 }
 
 __PACKAGE__->meta->make_immutable;

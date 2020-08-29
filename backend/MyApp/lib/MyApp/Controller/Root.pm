@@ -30,8 +30,6 @@ sub send_telegram :Chained('') :PathPart('send/telegram') :Args(0) {
     $c->res->body( decode('utf8', encode_json( $res || {} ) ) );
 }
 
-
-
 sub end : ActionClass('RenderView') {}
 
 __PACKAGE__->meta->make_immutable;
