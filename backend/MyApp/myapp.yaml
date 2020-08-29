@@ -1,0 +1,7 @@
+name: MyApp
+Telegram:
+    chat_id: 408115399
+    token: 1298158750:AAHNDXApslNbiYZoCDt5kuud-k6PWn_CSDI
+    host: api.telegram.org
+    protocol: https
+
