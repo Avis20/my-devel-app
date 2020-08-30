@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y -qq --no-install-recommends \
     libjson-xs-perl \
     xotcl-shells expect-dev \
     wget make \
+    cron curl htop tzdata \
     && rm -rf /var/lib/apt/lists/*
 
 # uni::perl
@@ -25,6 +26,15 @@ RUN wget "https://cpan.metacpan.org/authors/id/M/MO/MONS/uni-perl-0.92.tar.gz" \
     && perl Makefile.PL \
     && make \
     && make install
+
+RUN ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
+
+# Apply empty cron job
+RUN touch /etc/cron.d/crontab && chmod 0644 /etc/cron.d/crontab
+RUN touch /var/log/cron.log
+RUN crontab /etc/cron.d/crontab
+
+COPY ./daemon/crontab /etc/cron.d/crontab
 
 COPY backend /backend
 ENTRYPOINT /backend/start_project/cmd.sh

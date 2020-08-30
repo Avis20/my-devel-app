@@ -23,10 +23,16 @@ sub webhook : Chained('base') : PathPart('webhook') : Args(0) {
     close $fh;
 
     my $chat_id = $c->req->param('chat_id') || $c->config->{Telegram}->{chat_id};
-
     my $telegram_conf = $c->config->{Telegram};
     my $url = $telegram_conf->{protocol} . '://' . $telegram_conf->{host} . '/bot' . $telegram_conf->{token};
-    my $res = MyApp::Model::Chat->send_to_telegram({ url => $url, chat_id => $chat_id, message => $body->{text} });
+
+    my $msg = $body->{message}->{text} || 'something wrong';
+    if ( $body->{message}->{text} eq '/tail' ) {
+        my @res = qx{tail -13 /var/log/ping-ya.ru.log};
+        $msg = join ' ', @res;
+    }
+
+    my $res = MyApp::Model::Chat->send_to_telegram({ url => $url, chat_id => $chat_id, message => $msg });
     $c->res->body( decode('utf8', encode_json( $res || {} ) ) );
 }
 

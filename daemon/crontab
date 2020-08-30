@@ -1,0 +1,2 @@
+
+*/1 * * * * perl -E 'say "".localtime(time)."------->>\n".`curl -I ya.ru`' >> /var/log/ping-ya.ru.log

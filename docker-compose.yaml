@@ -10,6 +10,7 @@ services:
       - PORT=3001
     volumes:
       - ./backend/:/backend
+      - ./daemon/crontab:/etc/cron.d/crontab
     network_mode: 'host'
     # command: "unbuffer devel /MyApp/script/myapp_server.pl -p $PORT -r -d"
     command: "unbuffer perl /backend/MyApp/script/server.pl --debug --fork --port 3001 --keepalive --restart --restart_delay 1"

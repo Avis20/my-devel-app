@@ -11,7 +11,9 @@ __PACKAGE__->config(namespace => '');
 
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
-    $c->response->body('Hello');
+    my @res = qx{tail -13 /var/log/ping-ya.ru.log};
+    my $str = join ' ', @res;
+    $c->response->body($str);
 }
 
 sub default :Path {
