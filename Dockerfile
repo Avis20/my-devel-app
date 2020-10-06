@@ -1,6 +1,9 @@
-FROM ubuntu:bionic
+# FROM ubuntu:bionic
+FROM ubuntu:xenial
 
 ENV DEBIAN_FRONTEND noninteractive
+
+
 
 RUN apt-get update && apt-get install -y -qq --no-install-recommends \
     starman \
@@ -13,7 +16,7 @@ RUN apt-get update && apt-get install -y -qq --no-install-recommends \
     libcatalyst-view-json-perl \
     libjson-xs-perl \
     xotcl-shells expect-dev \
-    wget make \
+    wget make sudo \
     cron curl htop tzdata \
     && rm -rf /var/lib/apt/lists/*
 
@@ -27,14 +30,17 @@ RUN wget "https://cpan.metacpan.org/authors/id/M/MO/MONS/uni-perl-0.92.tar.gz" \
     && make \
     && make install
 
+# datetime
 RUN ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
 
-# Apply empty cron job
-RUN touch /etc/cron.d/crontab && chmod 0644 /etc/cron.d/crontab
-RUN touch /var/log/cron.log
-RUN crontab /etc/cron.d/crontab
-
+# cron
+RUN chmod gu+s /usr/sbin/cron && chmod gu+rw /var/run
+RUN chmod 4755 /usr/bin/crontab
 COPY ./daemon/crontab /etc/cron.d/crontab
+
+RUN useradd -ms /bin/bash user_d
+USER user_d
+WORKDIR /home/user_d
 
 COPY backend /backend
 ENTRYPOINT /backend/start_project/cmd.sh

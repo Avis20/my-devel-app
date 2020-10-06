@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
+
 # daemon
-crontab /etc/cron.d/crontab && cron -f /etc/cron.d/crontab -L 15 &
+# crontab /etc/cron.d/crontab && cron -f /etc/cron.d/crontab -L 15 &
 
 # backend
 export DBIC_TRACE=1
